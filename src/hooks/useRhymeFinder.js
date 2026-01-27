@@ -20,31 +20,58 @@ export function useRhymeFinder() {
     setWord(trimmed)
 
     try {
-      // Fetch perfect rhymes and near rhymes in parallel
-      const [perfectRes, nearRes] = await Promise.all([
-        fetch(`${DATAMUSE_BASE}?rel_rhy=${encodeURIComponent(trimmed)}&max=50`),
-        fetch(`${DATAMUSE_BASE}?rel_nry=${encodeURIComponent(trimmed)}&max=30`),
+      // Fetch all rhyme types in parallel
+      const [perfectRes, nearRes, slantRes, homophoneRes] = await Promise.all([
+        fetch(`${DATAMUSE_BASE}?rel_rhy=${encodeURIComponent(trimmed)}&max=40`),
+        fetch(`${DATAMUSE_BASE}?rel_nry=${encodeURIComponent(trimmed)}&max=25`),
+        fetch(`${DATAMUSE_BASE}?rel_cns=${encodeURIComponent(trimmed)}&max=25`),
+        fetch(`${DATAMUSE_BASE}?rel_hom=${encodeURIComponent(trimmed)}&max=10`),
       ])
 
-      if (!perfectRes.ok || !nearRes.ok) {
+      if (!perfectRes.ok || !nearRes.ok || !slantRes.ok || !homophoneRes.ok) {
         throw new Error('Failed to fetch rhymes')
       }
 
-      const [perfectData, nearData] = await Promise.all([
+      const [perfectData, nearData, slantData, homophoneData] = await Promise.all([
         perfectRes.json(),
         nearRes.json(),
+        slantRes.json(),
+        homophoneRes.json(),
       ])
 
-      // Extract words and remove duplicates
+      // Extract words and remove duplicates across categories
       const perfectWords = perfectData.map((item) => item.word)
-      const perfectSet = new Set(perfectWords)
+      const seenWords = new Set(perfectWords)
+
       const nearWords = nearData
         .map((item) => item.word)
-        .filter((w) => !perfectSet.has(w))
+        .filter((w) => {
+          if (seenWords.has(w)) return false
+          seenWords.add(w)
+          return true
+        })
+
+      const slantWords = slantData
+        .map((item) => item.word)
+        .filter((w) => {
+          if (seenWords.has(w)) return false
+          seenWords.add(w)
+          return true
+        })
+
+      const homophoneWords = homophoneData
+        .map((item) => item.word)
+        .filter((w) => {
+          if (seenWords.has(w)) return false
+          seenWords.add(w)
+          return true
+        })
 
       setResults({
         perfect: perfectWords,
         near: nearWords,
+        slant: slantWords,
+        homophones: homophoneWords,
       })
     } catch (err) {
       setError(err.message || 'Failed to fetch rhymes')

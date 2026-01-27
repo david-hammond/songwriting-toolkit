@@ -16,6 +16,13 @@ export default function RhymeFinder({ onBack }) {
     clear()
   }
 
+  const hasResults =
+    results &&
+    (results.perfect.length > 0 ||
+      results.near.length > 0 ||
+      results.slant.length > 0 ||
+      results.homophones.length > 0)
+
   return (
     <div className="rhyme-finder">
       <button onClick={onBack} className="btn-back" aria-label="Back to home">
@@ -57,7 +64,7 @@ export default function RhymeFinder({ onBack }) {
                 <h2>Perfect Rhymes</h2>
                 <div className="word-list">
                   {results.perfect.map((w) => (
-                    <span key={w} className="word-chip">
+                    <span key={w} className="word-chip perfect">
                       {w}
                     </span>
                   ))}
@@ -78,9 +85,33 @@ export default function RhymeFinder({ onBack }) {
               </div>
             )}
 
-            {results.perfect.length === 0 && results.near.length === 0 && (
-              <p className="no-results">No rhymes found for "{word}"</p>
+            {results.slant.length > 0 && (
+              <div className="result-section">
+                <h2>Slant Rhymes</h2>
+                <div className="word-list">
+                  {results.slant.map((w) => (
+                    <span key={w} className="word-chip slant">
+                      {w}
+                    </span>
+                  ))}
+                </div>
+              </div>
             )}
+
+            {results.homophones.length > 0 && (
+              <div className="result-section">
+                <h2>Homophones</h2>
+                <div className="word-list">
+                  {results.homophones.map((w) => (
+                    <span key={w} className="word-chip homophone">
+                      {w}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {!hasResults && <p className="no-results">No rhymes found for "{word}"</p>}
           </div>
         )}
       </div>

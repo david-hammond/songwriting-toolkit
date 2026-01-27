@@ -102,6 +102,16 @@
 }
 
 .word-chip.near {
+  background-color: #2196F3;
+  color: white;
+}
+
+.word-chip.slant {
+  background-color: #9C27B0;
+  color: white;
+}
+
+.word-chip.homophone {
   background-color: var(--card-bg);
   color: var(--text-color);
   border: 1px solid var(--card-border);
