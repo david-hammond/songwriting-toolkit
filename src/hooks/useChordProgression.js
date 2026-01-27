@@ -13,13 +13,13 @@ const ENHARMONIC = {
 
 // Scale degrees for major keys (chord qualities)
 const MAJOR_SCALE_CHORDS = [
-  { degree: 'I', quality: '', name: 'Tonic' },
-  { degree: 'ii', quality: 'm', name: 'Supertonic' },
-  { degree: 'iii', quality: 'm', name: 'Mediant' },
-  { degree: 'IV', quality: '', name: 'Subdominant' },
-  { degree: 'V', quality: '', name: 'Dominant' },
-  { degree: 'vi', quality: 'm', name: 'Submediant' },
-  { degree: 'vii°', quality: 'dim', name: 'Leading Tone' },
+  { degree: 'I', quality: '', quality7: 'maj7', name: 'Tonic' },
+  { degree: 'ii', quality: 'm', quality7: 'm7', name: 'Supertonic' },
+  { degree: 'iii', quality: 'm', quality7: 'm7', name: 'Mediant' },
+  { degree: 'IV', quality: '', quality7: 'maj7', name: 'Subdominant' },
+  { degree: 'V', quality: '', quality7: '7', name: 'Dominant' },
+  { degree: 'vi', quality: 'm', quality7: 'm7', name: 'Submediant' },
+  { degree: 'vii°', quality: 'dim', quality7: 'm7b5', name: 'Leading Tone' },
 ]
 
 // Semitones from root for major scale
@@ -62,17 +62,20 @@ function shouldUseFlats(key) {
   return ['F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb'].includes(key)
 }
 
-function getChordsInKey(key) {
+function getChordsInKey(key, use7ths = false) {
   const rootIndex = getNoteIndex(key)
   const useFlats = shouldUseFlats(key)
 
   return MAJOR_SCALE_CHORDS.map((chord, i) => {
     const noteIndex = rootIndex + MAJOR_INTERVALS[i]
     const root = getNote(noteIndex, useFlats)
+    const quality = use7ths ? chord.quality7 : chord.quality
     return {
       ...chord,
       root,
-      chord: root + chord.quality,
+      chord: root + quality,
+      triad: root + chord.quality,
+      seventh: root + chord.quality7,
     }
   })
 }
@@ -130,8 +133,9 @@ function getSuggestedNextChords(currentChord, key) {
 export function useChordProgression() {
   const [key, setKey] = useState('C')
   const [progression, setProgression] = useState([])
+  const [use7ths, setUse7ths] = useState(false)
 
-  const chordsInKey = useMemo(() => getChordsInKey(key), [key])
+  const chordsInKey = useMemo(() => getChordsInKey(key, use7ths), [key, use7ths])
   const relatedKeys = useMemo(() => getRelatedKeys(key), [key])
 
   const suggestedNext = useMemo(() => {
@@ -204,6 +208,8 @@ export function useChordProgression() {
     suggestedNext,
     commonProgressions: COMMON_PROGRESSIONS,
     circleOfFifths: CIRCLE_OF_FIFTHS,
+    use7ths,
+    setUse7ths,
     addChord,
     removeLastChord,
     clearProgression,

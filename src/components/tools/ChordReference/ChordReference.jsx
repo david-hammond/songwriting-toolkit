@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import { useChordProgression } from '../../../hooks/useChordProgression'
 import { playProgression } from '../../../utils/audio'
+import ChordDiagram from '../../ChordDiagram'
 import './ChordReference.css'
 
 const ALL_KEYS = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'F', 'Bb', 'Eb', 'Ab', 'Db']
 
 export default function ChordReference({ onBack }) {
   const [isPlaying, setIsPlaying] = useState(false)
+  const [showDiagrams, setShowDiagrams] = useState(false)
+  const [selectedChord, setSelectedChord] = useState(null)
 
   const {
     key,
@@ -16,6 +19,8 @@ export default function ChordReference({ onBack }) {
     relatedKeys,
     suggestedNext,
     commonProgressions,
+    use7ths,
+    setUse7ths,
     addChord,
     removeLastChord,
     clearProgression,
@@ -27,6 +32,16 @@ export default function ChordReference({ onBack }) {
     setIsPlaying(true)
     const duration = playProgression(progression)
     setTimeout(() => setIsPlaying(false), duration)
+  }
+
+  const handleClear = () => {
+    clearProgression()
+    setSelectedChord(null)
+  }
+
+  const handleApplyProgression = (numerals) => {
+    applyCommonProgression(numerals)
+    setSelectedChord(null)
   }
 
   return (
@@ -54,6 +69,28 @@ export default function ChordReference({ onBack }) {
           </div>
         </div>
 
+        {/* Options */}
+        <div className="section">
+          <div className="options-row">
+            <label className="toggle-option">
+              <input
+                type="checkbox"
+                checked={use7ths}
+                onChange={(e) => setUse7ths(e.target.checked)}
+              />
+              <span className="toggle-label">7th Chords</span>
+            </label>
+            <label className="toggle-option">
+              <input
+                type="checkbox"
+                checked={showDiagrams}
+                onChange={(e) => setShowDiagrams(e.target.checked)}
+              />
+              <span className="toggle-label">Guitar Diagrams</span>
+            </label>
+          </div>
+        </div>
+
         {/* Current Progression */}
         <div className="section">
           <h2>Your Progression</h2>
@@ -62,11 +99,20 @@ export default function ChordReference({ onBack }) {
               <>
                 <div className="progression-chords">
                   {progression.map((chord, i) => (
-                    <span key={i} className="progression-chord">
+                    <button
+                      key={i}
+                      className={`progression-chord-btn ${selectedChord === chord ? 'selected' : ''}`}
+                      onClick={() => setSelectedChord(selectedChord === chord ? null : chord)}
+                    >
                       {chord}
-                    </span>
+                    </button>
                   ))}
                 </div>
+                {selectedChord && (
+                  <div className="selected-chord-diagram">
+                    <ChordDiagram chord={selectedChord} size={100} />
+                  </div>
+                )}
                 <div className="progression-actions">
                   <button
                     onClick={handlePlay}
@@ -78,7 +124,7 @@ export default function ChordReference({ onBack }) {
                   <button onClick={removeLastChord} className="btn btn-secondary btn-small">
                     Undo
                   </button>
-                  <button onClick={clearProgression} className="btn btn-secondary btn-small">
+                  <button onClick={handleClear} className="btn btn-secondary btn-small">
                     Clear
                   </button>
                 </div>
@@ -104,11 +150,16 @@ export default function ChordReference({ onBack }) {
         {/* Chords in Key */}
         <div className="section">
           <h2>Chords in {key} Major</h2>
-          <div className="chords-in-key">
+          <div className={`chords-in-key ${showDiagrams ? 'with-diagrams' : ''}`}>
             {chordsInKey.map((c) => (
-              <button key={c.degree} onClick={() => addChord(c.chord)} className="chord-btn">
+              <button
+                key={c.degree}
+                onClick={() => addChord(c.chord)}
+                className={`chord-btn ${showDiagrams ? 'with-diagram' : ''}`}
+              >
                 <span className="chord-name">{c.chord}</span>
                 <span className="chord-degree">{c.degree}</span>
+                {showDiagrams && <ChordDiagram chord={c.chord} size={60} />}
               </button>
             ))}
           </div>
@@ -121,7 +172,7 @@ export default function ChordReference({ onBack }) {
             {commonProgressions.map((prog) => (
               <button
                 key={prog.name}
-                onClick={() => applyCommonProgression(prog.numerals)}
+                onClick={() => handleApplyProgression(prog.numerals)}
                 className="progression-btn"
               >
                 <span className="prog-name">{prog.name}</span>

@@ -88,18 +88,6 @@
   align-items: center;
 }
 
-.progression-chord {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--accent-color);
-}
-
-.progression-chord:not(:last-child)::after {
-  content: ' → ';
-  color: var(--text-secondary);
-  font-weight: 400;
-}
-
 .progression-actions {
   display: flex;
   gap: 0.5rem;
@@ -265,6 +253,86 @@
   font-size: 0.875rem;
 }
 
+/* Options toggles */
+.options-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.toggle-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-option input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent-color);
+  cursor: pointer;
+}
+
+.toggle-label {
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+/* Chords with diagrams */
+.chords-in-key.with-diagrams {
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 0.75rem;
+}
+
+.chord-btn.with-diagram {
+  min-height: 140px;
+  padding: 0.5rem;
+}
+
+.chord-btn.with-diagram .chord-name {
+  font-size: 1rem;
+}
+
+/* Progression chord buttons */
+.progression-chord-btn {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.progression-chord-btn:hover {
+  background-color: var(--card-border);
+}
+
+.progression-chord-btn.selected {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.progression-chord-btn:not(:last-child)::after {
+  content: ' → ';
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* Selected chord diagram display */
+.selected-chord-diagram {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem;
+  background-color: var(--bg-color);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+}
+
 @media (max-width: 480px) {
   .chord-reference h1 {
     font-size: 1.75rem;
@@ -274,7 +342,11 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .progression-chord {
+  .chords-in-key.with-diagrams {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .progression-chord-btn {
     font-size: 1.25rem;
   }
 
@@ -284,5 +356,13 @@
 
   .prog-desc {
     display: none;
+  }
+
+  .options-row {
+    gap: 0.75rem;
+  }
+
+  .toggle-label {
+    font-size: 0.85rem;
   }
 }

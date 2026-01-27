@@ -1,0 +1,23 @@
+.chord-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chord-diagram svg {
+  color: var(--text-color);
+}
+
+.chord-diagram-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-bg);
+  border: 1px dashed var(--card-border);
+  border-radius: 4px;
+}
+
+.chord-diagram-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
