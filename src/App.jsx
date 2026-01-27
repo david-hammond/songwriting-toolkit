@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import ObjectWriting from './components/tools/ObjectWriting/ObjectWriting'
+import RhymeFinder from './components/tools/RhymeFinder/RhymeFinder'
 import './App.css'
 
 const TOOLS = [
   { id: 'object-writing', name: 'Object Writing', icon: '✏️', disabled: false },
-  { id: 'rhyme-finder', name: 'Rhyme Finder', icon: '🔍', disabled: true },
+  { id: 'rhyme-finder', name: 'Rhyme Finder', icon: '🔍', disabled: false },
   { id: 'chords', name: 'Chord Reference', icon: '🎸', disabled: true },
 ]
 
@@ -40,6 +41,7 @@ function App() {
     <div className="app">
       {currentTool === 'home' && <ToolSelector onSelectTool={setCurrentTool} />}
       {currentTool === 'object-writing' && <ObjectWriting onBack={handleBack} />}
+      {currentTool === 'rhyme-finder' && <RhymeFinder onBack={handleBack} />}
     </div>
   )
 }
