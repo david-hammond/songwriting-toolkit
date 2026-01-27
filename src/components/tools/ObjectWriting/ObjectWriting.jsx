@@ -10,11 +10,22 @@ const DURATION_OPTIONS = [
   { label: '10 min', seconds: 600 },
 ]
 
+const SENSE_PROMPTS = [
+  { sense: 'Sight', prompt: 'What do you see?' },
+  { sense: 'Sound', prompt: 'What do you hear?' },
+  { sense: 'Smell', prompt: 'What do you smell?' },
+  { sense: 'Taste', prompt: 'What does it taste like?' },
+  { sense: 'Touch', prompt: 'What do you feel?' },
+  { sense: 'Body', prompt: 'What sensations in your body?' },
+  { sense: 'Motion', prompt: 'What movement is there?' },
+]
+
 export default function ObjectWriting({ onBack }) {
   const [prompts, setPrompts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [duration, setDuration] = useState(600)
+  const [senseIndex, setSenseIndex] = useState(null)
 
   const {
     currentPrompt,
@@ -51,7 +62,25 @@ export default function ObjectWriting({ onBack }) {
 
   const handleBack = () => {
     reset()
+    setSenseIndex(null)
     onBack()
+  }
+
+  const handleStart = () => {
+    setSenseIndex(null)
+    startExercise()
+  }
+
+  const cycleSense = () => {
+    if (senseIndex === null) {
+      setSenseIndex(0)
+    } else {
+      setSenseIndex((prev) => (prev + 1) % SENSE_PROMPTS.length)
+    }
+  }
+
+  const hideSensePrompt = () => {
+    setSenseIndex(null)
   }
 
   if (loading) {
@@ -96,7 +125,7 @@ export default function ObjectWriting({ onBack }) {
               </button>
             ))}
           </div>
-          <button onClick={startExercise} className="btn btn-primary btn-large">
+          <button onClick={handleStart} className="btn btn-primary btn-large">
             Start Exercise
           </button>
         </div>
@@ -115,7 +144,7 @@ export default function ObjectWriting({ onBack }) {
           <h2 className="complete-message">Time's up!</h2>
           <p className="prompt">{currentPrompt}</p>
           <div className="button-group">
-            <button onClick={startExercise} className="btn btn-primary btn-large">
+            <button onClick={handleStart} className="btn btn-primary btn-large">
               Start Again
             </button>
           </div>
@@ -125,6 +154,8 @@ export default function ObjectWriting({ onBack }) {
   }
 
   // Exercise running
+  const currentSense = senseIndex !== null ? SENSE_PROMPTS[senseIndex] : null
+
   return (
     <div className="object-writing">
       <button onClick={handleBack} className="btn-back" aria-label="Back to home">
@@ -133,12 +164,31 @@ export default function ObjectWriting({ onBack }) {
       <div className="content">
         <p className="prompt">{currentPrompt}</p>
         <p className="timer">{formattedTime}</p>
+
+        {currentSense && (
+          <div className="sense-prompt">
+            <span className="sense-label">{currentSense.sense}</span>
+            <span className="sense-question">{currentSense.prompt}</span>
+          </div>
+        )}
+
         <div className="button-group">
-          <button onClick={getNewPrompt} className="btn btn-secondary">
+          <button onClick={cycleSense} className="btn btn-accent">
+            {senseIndex === null ? 'Stuck?' : 'Next Sense'}
+          </button>
+          {senseIndex !== null && (
+            <button onClick={hideSensePrompt} className="btn btn-secondary">
+              Hide
+            </button>
+          )}
+        </div>
+
+        <div className="button-group secondary-actions">
+          <button onClick={getNewPrompt} className="btn btn-secondary btn-small">
             New Prompt
           </button>
-          <button onClick={restartTimer} className="btn btn-secondary">
-            Restart Timer
+          <button onClick={restartTimer} className="btn btn-secondary btn-small">
+            Restart
           </button>
         </div>
       </div>
