@@ -14,9 +14,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icons/*.png'],
       manifest: {
-        name: "Songwriter's Toolkit",
-        short_name: 'Songwriting',
-        description: 'Writing exercises and reference tools for songwriters',
+        name: 'Pentatonic',
+        short_name: 'Pentatonic',
+        description: "A songwriter's toolkit — because I want to hear better songs",
         start_url: '/pentatonic/',
         scope: '/pentatonic/',
         display: 'standalone',

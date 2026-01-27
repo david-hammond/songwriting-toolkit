@@ -11,8 +11,8 @@ const TOOLS = [
 function ToolSelector({ onSelectTool }) {
   return (
     <div className="tool-selector">
-      <h1>Songwriter's Toolkit</h1>
-      <p className="tagline">Writing exercises and reference tools</p>
+      <h1>Pentatonic</h1>
+      <p className="tagline">A songwriter's toolkit — because I want to hear better songs</p>
       <div className="tool-grid">
         {TOOLS.map((tool) => (
           <button

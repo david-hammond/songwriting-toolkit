@@ -1,14 +1,21 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 
-const EXERCISE_DURATION = 600 // 10 minutes in seconds
-
-export function useObjectWriting(prompts) {
+export function useObjectWriting(prompts, durationSeconds = 600) {
   const [currentPrompt, setCurrentPrompt] = useState('')
-  const [timeLeft, setTimeLeft] = useState(EXERCISE_DURATION)
+  const [timeLeft, setTimeLeft] = useState(durationSeconds)
   const [isRunning, setIsRunning] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
   const previousPromptRef = useRef('')
   const timerRef = useRef(null)
+  const durationRef = useRef(durationSeconds)
+
+  // Update duration ref when it changes
+  useEffect(() => {
+    durationRef.current = durationSeconds
+    if (!isRunning && !isComplete) {
+      setTimeLeft(durationSeconds)
+    }
+  }, [durationSeconds, isRunning, isComplete])
 
   const getRandomPrompt = useCallback(() => {
     if (!prompts || prompts.length === 0) return ''
@@ -25,7 +32,7 @@ export function useObjectWriting(prompts) {
 
   const startExercise = useCallback(() => {
     setCurrentPrompt(getRandomPrompt())
-    setTimeLeft(EXERCISE_DURATION)
+    setTimeLeft(durationRef.current)
     setIsRunning(true)
     setIsComplete(false)
   }, [getRandomPrompt])
@@ -35,14 +42,14 @@ export function useObjectWriting(prompts) {
   }, [getRandomPrompt])
 
   const restartTimer = useCallback(() => {
-    setTimeLeft(EXERCISE_DURATION)
+    setTimeLeft(durationRef.current)
     setIsComplete(false)
     setIsRunning(true)
   }, [])
 
   const reset = useCallback(() => {
     setCurrentPrompt('')
-    setTimeLeft(EXERCISE_DURATION)
+    setTimeLeft(durationRef.current)
     setIsRunning(false)
     setIsComplete(false)
     if (timerRef.current) {

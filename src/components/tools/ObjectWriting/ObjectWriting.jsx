@@ -3,10 +3,18 @@ import { useObjectWriting } from '../../../hooks/useObjectWriting'
 import { playChime } from '../../../utils/audio'
 import './ObjectWriting.css'
 
+const DURATION_OPTIONS = [
+  { label: '1 min', seconds: 60 },
+  { label: '3 min', seconds: 180 },
+  { label: '5 min', seconds: 300 },
+  { label: '10 min', seconds: 600 },
+]
+
 export default function ObjectWriting({ onBack }) {
   const [prompts, setPrompts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [duration, setDuration] = useState(600)
 
   const {
     currentPrompt,
@@ -17,7 +25,7 @@ export default function ObjectWriting({ onBack }) {
     getNewPrompt,
     restartTimer,
     reset,
-  } = useObjectWriting(prompts)
+  } = useObjectWriting(prompts, duration)
 
   useEffect(() => {
     fetch(import.meta.env.BASE_URL + 'data/prompts.json')
@@ -75,9 +83,19 @@ export default function ObjectWriting({ onBack }) {
         <div className="content">
           <h1>Object Writing</h1>
           <p className="description">
-            Write freely for 10 minutes using all your senses. Focus on the prompt and let your
-            mind wander.
+            Write freely using all your senses. Focus on the prompt and let your mind wander.
           </p>
+          <div className="duration-selector">
+            {DURATION_OPTIONS.map((option) => (
+              <button
+                key={option.seconds}
+                onClick={() => setDuration(option.seconds)}
+                className={`duration-btn ${duration === option.seconds ? 'selected' : ''}`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
           <button onClick={startExercise} className="btn btn-primary btn-large">
             Start Exercise
           </button>

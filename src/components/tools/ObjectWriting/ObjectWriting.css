@@ -79,6 +79,36 @@
   margin: 0;
 }
 
+.duration-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.duration-btn {
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 2px solid var(--card-border);
+  border-radius: 8px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 44px;
+}
+
+.duration-btn:hover {
+  border-color: var(--accent-color);
+}
+
+.duration-btn.selected {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
 .button-group {
   display: flex;
   flex-wrap: wrap;
