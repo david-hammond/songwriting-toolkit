@@ -1,3 +1,12 @@
+/* Chord function colors */
+.chord-reference {
+  --function-tonic: #4CAF50;
+  --function-dominant: #2196F3;
+  --function-subdominant: #FF9800;
+  --function-mediant: #9C27B0;
+  --function-diminished: #F44336;
+}
+
 .chord-reference {
   min-height: 100vh;
   min-height: 100dvh;
@@ -333,6 +342,185 @@
   margin-top: 0.5rem;
 }
 
+/* Theory Tip (inline detection) */
+.theory-tip {
+  background: linear-gradient(135deg, var(--function-tonic) 0%, var(--function-dominant) 100%);
+  color: white;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.theory-tip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.theory-tip-name {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.theory-tip-numerals {
+  font-family: monospace;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.theory-tip-description {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.theory-tip-songs {
+  margin: 0;
+  font-size: 0.8rem;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* Function color-coded chord buttons */
+.chord-btn.function-tonic {
+  border-left: 4px solid var(--function-tonic);
+}
+
+.chord-btn.function-dominant {
+  border-left: 4px solid var(--function-dominant);
+}
+
+.chord-btn.function-subdominant {
+  border-left: 4px solid var(--function-subdominant);
+}
+
+/* Function Legend */
+.function-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.function-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.function-legend-item::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.function-legend-item.tonic::before {
+  background-color: var(--function-tonic);
+}
+
+.function-legend-item.subdominant::before {
+  background-color: var(--function-subdominant);
+}
+
+.function-legend-item.dominant::before {
+  background-color: var(--function-dominant);
+}
+
+/* Genre Filters */
+.genre-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.genre-chip {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 2px solid var(--card-border);
+  border-radius: 20px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.genre-chip:hover {
+  border-color: var(--accent-color);
+}
+
+.genre-chip.active {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+/* Enhanced Progression Cards */
+.progression-card {
+  background-color: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.progression-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.progression-card .prog-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.progression-card .prog-numerals {
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: var(--accent-color);
+}
+
+.progression-card-meta {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.prog-genres {
+  font-weight: 500;
+}
+
+.prog-mood {
+  text-transform: capitalize;
+}
+
+.prog-songs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.prog-song {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.progression-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 @media (max-width: 480px) {
   .chord-reference h1 {
     font-size: 1.75rem;
@@ -364,5 +552,23 @@
 
   .toggle-label {
     font-size: 0.85rem;
+  }
+
+  .genre-filters {
+    gap: 0.375rem;
+  }
+
+  .genre-chip {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .progression-card-meta {
+    flex-wrap: wrap;
+  }
+
+  .function-legend {
+    gap: 0.5rem;
+    font-size: 0.7rem;
   }
 }

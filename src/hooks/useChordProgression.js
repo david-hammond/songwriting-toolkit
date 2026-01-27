@@ -29,21 +29,188 @@ const MAJOR_INTERVALS = [0, 2, 4, 5, 7, 9, 11]
 const CHROMATIC = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 const CHROMATIC_FLAT = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
 
-// Common progressions with descriptions
+// Key relationships for educational content
+const KEY_RELATIONSHIPS = {
+  dominant: {
+    label: 'Dominant (V)',
+    shortLabel: 'V',
+    explanation: 'One step clockwise on the circle. Creates tension that wants to resolve back home.',
+    usage: 'Use the V chord to build anticipation before returning to I.',
+  },
+  subdominant: {
+    label: 'Subdominant (IV)',
+    shortLabel: 'IV',
+    explanation: 'One step counter-clockwise. Feels like gently moving away from home.',
+    usage: 'The IV chord provides departure without strong tension.',
+  },
+  relativeMinor: {
+    label: 'Relative Minor',
+    shortLabel: 'vi',
+    explanation: 'Shares all the same notes but starts from the 6th degree. Same key signature.',
+    usage: 'Switch to relative minor for a sadder feel using familiar chords.',
+  },
+  parallelMinor: {
+    label: 'Parallel Minor',
+    shortLabel: 'i',
+    explanation: 'Same root note but minor scale. Different key signature.',
+    usage: 'Borrow chords from parallel minor for darker colors (bVI, bVII, bIII).',
+  },
+}
+
+// Common progressions with enhanced educational data
 const COMMON_PROGRESSIONS = [
   // Major key progressions
-  { numerals: ['I', 'V', 'vi', 'IV'], name: 'Four Chords', description: "Pop's most famous progression" },
-  { numerals: ['I', 'IV', 'V', 'I'], name: 'Classic', description: 'Traditional resolution' },
-  { numerals: ['I', 'vi', 'IV', 'V'], name: '50s', description: 'Doo-wop progression' },
-  { numerals: ['vi', 'IV', 'I', 'V'], name: 'Axis', description: 'Sensitive/emotional rotation' },
-  { numerals: ['I', 'V', 'IV', 'I'], name: 'Rock', description: 'Simple rock progression' },
-  { numerals: ['I', 'bVII', 'IV', 'I'], name: 'Mixolydian', description: 'Rock/folk borrowed chord' },
-  { numerals: ['ii', 'V', 'I'], name: 'Jazz ii-V-I', description: 'Jazz standard cadence' },
-  // Minor key progressions (using parallel minor)
-  { numerals: ['i', 'bVI', 'bIII', 'bVII'], name: 'Minor Pop', description: 'Minor equivalent of Four Chords' },
-  { numerals: ['i', 'bVII', 'bVI', 'V'], name: 'Andalusian', description: 'Spanish/flamenco descent' },
-  { numerals: ['i', 'bVII', 'bVI', 'bVII'], name: 'Minor Rock', description: 'Minor key rock feel' },
-  { numerals: ['i', 'iv', 'bVII', 'i'], name: 'Minor Blues', description: 'Minor blues feel' },
+  {
+    numerals: ['I', 'V', 'vi', 'IV'],
+    name: 'Four Chords',
+    description: "Pop's most famous progression",
+    genre: ['pop', 'rock'],
+    mood: 'anthemic',
+    songs: [
+      { title: 'Let It Be', artist: 'The Beatles' },
+      { title: 'No Woman No Cry', artist: 'Bob Marley' },
+      { title: 'Someone Like You', artist: 'Adele' },
+      { title: 'With or Without You', artist: 'U2' },
+    ],
+    theory: 'The vi chord adds emotional depth to the bright I-V. Starting on I establishes home before exploring.',
+  },
+  {
+    numerals: ['I', 'IV', 'V', 'I'],
+    name: 'Classic',
+    description: 'Traditional resolution',
+    genre: ['folk', 'country', 'rock'],
+    mood: 'resolved',
+    songs: [
+      { title: 'Twist and Shout', artist: 'The Beatles' },
+      { title: 'La Bamba', artist: 'Ritchie Valens' },
+      { title: 'Wild Thing', artist: 'The Troggs' },
+    ],
+    theory: 'The oldest progression in Western music. IV-V-I is the "authentic cadence" - maximum resolution.',
+  },
+  {
+    numerals: ['I', 'vi', 'IV', 'V'],
+    name: '50s',
+    description: 'Doo-wop progression',
+    genre: ['pop', 'doo-wop'],
+    mood: 'nostalgic',
+    songs: [
+      { title: 'Stand By Me', artist: 'Ben E. King' },
+      { title: 'Every Breath You Take', artist: 'The Police' },
+      { title: 'Earth Angel', artist: 'The Penguins' },
+    ],
+    theory: 'The vi after I creates instant emotional pull. Classic sound of 1950s pop and doo-wop.',
+  },
+  {
+    numerals: ['vi', 'IV', 'I', 'V'],
+    name: 'Axis',
+    description: 'Sensitive/emotional rotation',
+    genre: ['pop'],
+    mood: 'emotional',
+    songs: [
+      { title: 'Despacito', artist: 'Luis Fonsi' },
+      { title: 'Grenade', artist: 'Bruno Mars' },
+      { title: 'Save Tonight', artist: 'Eagle-Eye Cherry' },
+    ],
+    theory: 'Same chords as Four Chords but starting on vi. Creates a more vulnerable, emotional feel.',
+  },
+  {
+    numerals: ['I', 'V', 'IV', 'I'],
+    name: 'Rock',
+    description: 'Simple rock progression',
+    genre: ['rock'],
+    mood: 'driving',
+    songs: [
+      { title: 'Born This Way', artist: 'Lady Gaga' },
+      { title: 'Louie Louie', artist: 'The Kingsmen' },
+    ],
+    theory: 'V before IV creates a "retrogression" - feels like confident swagger rather than resolution.',
+  },
+  {
+    numerals: ['I', 'bVII', 'IV', 'I'],
+    name: 'Mixolydian',
+    description: 'Rock/folk borrowed chord',
+    genre: ['rock', 'folk'],
+    mood: 'earthy',
+    songs: [
+      { title: 'Sweet Child O\' Mine', artist: 'Guns N\' Roses' },
+      { title: 'Sympathy for the Devil', artist: 'Rolling Stones' },
+      { title: 'Hey Jude (coda)', artist: 'The Beatles' },
+    ],
+    theory: 'The bVII is borrowed from the parallel minor/Mixolydian mode. Adds a bluesy, earthy flavor.',
+  },
+  {
+    numerals: ['ii', 'V', 'I'],
+    name: 'Jazz ii-V-I',
+    description: 'Jazz standard cadence',
+    genre: ['jazz'],
+    mood: 'sophisticated',
+    songs: [
+      { title: 'Fly Me to the Moon', artist: 'Frank Sinatra' },
+      { title: 'Autumn Leaves', artist: 'Jazz Standard' },
+      { title: 'All The Things You Are', artist: 'Jazz Standard' },
+    ],
+    theory: 'The foundation of jazz harmony. ii-V creates smooth voice leading into I. Often extended with 7ths.',
+  },
+  // Minor key progressions
+  {
+    numerals: ['i', 'bVI', 'bIII', 'bVII'],
+    name: 'Minor Pop',
+    description: 'Minor equivalent of Four Chords',
+    genre: ['pop', 'rock'],
+    mood: 'dark',
+    songs: [
+      { title: 'What\'s Up', artist: '4 Non Blondes' },
+      { title: 'Zombie', artist: 'The Cranberries' },
+    ],
+    theory: 'The minor key version of the Four Chords. All chords from natural minor scale - no leading tone tension.',
+  },
+  {
+    numerals: ['i', 'bVII', 'bVI', 'V'],
+    name: 'Andalusian',
+    description: 'Spanish/flamenco descent',
+    genre: ['flamenco', 'rock'],
+    mood: 'dramatic',
+    songs: [
+      { title: 'Smooth', artist: 'Santana' },
+      { title: 'Sultans of Swing', artist: 'Dire Straits' },
+      { title: 'Hit The Road Jack', artist: 'Ray Charles' },
+    ],
+    theory: 'Descending bass line from i to V. The major V at the end (from harmonic minor) creates strong pull back.',
+  },
+  {
+    numerals: ['i', 'bVII', 'bVI', 'bVII'],
+    name: 'Minor Rock',
+    description: 'Minor key rock feel',
+    genre: ['rock'],
+    mood: 'powerful',
+    songs: [
+      { title: 'All Along the Watchtower', artist: 'Bob Dylan/Hendrix' },
+      { title: 'Stairway to Heaven (verse)', artist: 'Led Zeppelin' },
+    ],
+    theory: 'Avoids the V chord entirely - stays in natural minor for a modal, less "resolved" sound.',
+  },
+  {
+    numerals: ['i', 'iv', 'bVII', 'i'],
+    name: 'Minor Blues',
+    description: 'Minor blues feel',
+    genre: ['blues', 'rock'],
+    mood: 'bluesy',
+    songs: [
+      { title: 'The Thrill Is Gone', artist: 'B.B. King' },
+      { title: 'Black Magic Woman', artist: 'Santana' },
+    ],
+    theory: 'Minor version of the I-IV-V blues. The iv (minor subdominant) adds extra darkness.',
+  },
+]
+
+// Genre definitions for filtering
+const GENRES = [
+  { id: 'pop', label: 'Pop', description: 'Catchy, emotionally direct' },
+  { id: 'rock', label: 'Rock', description: 'Power and energy' },
+  { id: 'jazz', label: 'Jazz', description: 'Sophisticated harmony' },
+  { id: 'blues', label: 'Blues', description: 'Raw, soulful emotion' },
+  { id: 'folk', label: 'Folk', description: 'Simple, storytelling' },
+  { id: 'country', label: 'Country', description: 'Traditional, heartfelt' },
 ]
 
 function getNoteIndex(note) {
@@ -130,13 +297,110 @@ function getSuggestedNextChords(currentChord, key) {
   return suggestions
 }
 
+// Detect if current progression matches a known pattern
+function detectProgression(progression, key, chordsInKey) {
+  if (progression.length < 3) return null
+
+  // Convert progression to numerals for comparison
+  const numerals = progression.map((chord) => {
+    // Find in diatonic chords first
+    const diatonic = chordsInKey.find(
+      (c) => c.chord === chord || c.triad === chord || c.root === chord.replace(/m|dim|7|maj7|m7|m7b5/g, '')
+    )
+    if (diatonic) {
+      // Check if it's minor when it should be major (or vice versa)
+      const isMinor = chord.includes('m') && !chord.includes('maj')
+      const expectedMinor = diatonic.quality === 'm' || diatonic.quality === 'dim'
+      if (isMinor !== expectedMinor && diatonic.degree !== 'vii°') {
+        // Could be borrowed chord - check for lowercase
+        return diatonic.degree.toLowerCase()
+      }
+      return diatonic.degree
+    }
+    // Check for borrowed chords (bVII, bVI, bIII)
+    const rootIndex = getNoteIndex(key)
+    const chordRoot = chord.replace(/m|dim|7|maj7|m7|m7b5/g, '')
+    const chordIndex = getNoteIndex(chordRoot)
+    if (chordIndex === -1) return null
+
+    const interval = ((chordIndex - rootIndex + 12) % 12)
+    // Common borrowed chords
+    if (interval === 10) return 'bVII' // Flat 7
+    if (interval === 8) return 'bVI' // Flat 6
+    if (interval === 3) return 'bIII' // Flat 3
+    return null
+  })
+
+  // Check against known progressions
+  for (const prog of COMMON_PROGRESSIONS) {
+    if (prog.numerals.length !== numerals.length) continue
+
+    const matches = prog.numerals.every((numeral, i) => {
+      const actual = numerals[i]
+      if (!actual) return false
+      // Normalize for comparison (case-insensitive for degree, handle vii° vs vii)
+      const normalizedProg = numeral.toLowerCase().replace('°', '')
+      const normalizedActual = actual.toLowerCase().replace('°', '')
+      return normalizedProg === normalizedActual
+    })
+
+    if (matches) return prog
+  }
+
+  return null
+}
+
+// Get chord function (tonic, dominant, subdominant, etc.)
+function getChordFunction(degree) {
+  const functions = {
+    'I': 'tonic',
+    'i': 'tonic',
+    'ii': 'subdominant',
+    'II': 'subdominant',
+    'iii': 'tonic', // Tonic substitute
+    'III': 'tonic',
+    'bIII': 'tonic',
+    'IV': 'subdominant',
+    'iv': 'subdominant',
+    'V': 'dominant',
+    'v': 'dominant',
+    'vi': 'tonic', // Tonic substitute
+    'VI': 'tonic',
+    'bVI': 'subdominant',
+    'vii°': 'dominant', // Dominant substitute
+    'VII': 'dominant',
+    'bVII': 'subdominant',
+  }
+  return functions[degree] || 'other'
+}
+
 export function useChordProgression() {
   const [key, setKey] = useState('C')
   const [progression, setProgression] = useState([])
   const [use7ths, setUse7ths] = useState(false)
+  const [genreFilter, setGenreFilter] = useState(null)
 
   const chordsInKey = useMemo(() => getChordsInKey(key, use7ths), [key, use7ths])
   const relatedKeys = useMemo(() => getRelatedKeys(key), [key])
+
+  // Add chord function to each chord in key
+  const chordsWithFunction = useMemo(() => {
+    return chordsInKey.map((c) => ({
+      ...c,
+      function: getChordFunction(c.degree),
+    }))
+  }, [chordsInKey])
+
+  // Detect if current progression matches a known pattern
+  const detectedProgression = useMemo(() => {
+    return detectProgression(progression, key, chordsInKey)
+  }, [progression, key, chordsInKey])
+
+  // Filter progressions by genre
+  const filteredProgressions = useMemo(() => {
+    if (!genreFilter) return COMMON_PROGRESSIONS
+    return COMMON_PROGRESSIONS.filter((p) => p.genre && p.genre.includes(genreFilter))
+  }, [genreFilter])
 
   const suggestedNext = useMemo(() => {
     if (progression.length === 0) {
@@ -204,15 +468,23 @@ export function useChordProgression() {
     setKey,
     progression,
     chordsInKey,
+    chordsWithFunction,
     relatedKeys,
     suggestedNext,
     commonProgressions: COMMON_PROGRESSIONS,
+    filteredProgressions,
     circleOfFifths: CIRCLE_OF_FIFTHS,
+    keyRelationships: KEY_RELATIONSHIPS,
+    genres: GENRES,
+    genreFilter,
+    setGenreFilter,
+    detectedProgression,
     use7ths,
     setUse7ths,
     addChord,
     removeLastChord,
     clearProgression,
     applyCommonProgression,
+    getChordFunction,
   }
 }

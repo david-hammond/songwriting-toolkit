@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { useChordProgression } from '../../../hooks/useChordProgression'
 import { playProgression } from '../../../utils/audio'
 import ChordDiagram from '../../ChordDiagram'
+import CircleOfFifths from './CircleOfFifths'
 import './ChordReference.css'
-
-const ALL_KEYS = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'F', 'Bb', 'Eb', 'Ab', 'Db']
 
 export default function ChordReference({ onBack }) {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -15,10 +14,14 @@ export default function ChordReference({ onBack }) {
     key,
     setKey,
     progression,
-    chordsInKey,
+    chordsWithFunction,
     relatedKeys,
     suggestedNext,
-    commonProgressions,
+    filteredProgressions,
+    genres,
+    genreFilter,
+    setGenreFilter,
+    detectedProgression,
     use7ths,
     setUse7ths,
     addChord,
@@ -51,22 +54,14 @@ export default function ChordReference({ onBack }) {
       </button>
 
       <div className="content">
-        <h1>Chord Progressions</h1>
+        <h1>Circle of Fifths</h1>
 
-        {/* Key Selector */}
+        {/* Circle of Fifths Visualization */}
         <div className="section">
-          <h2>Select Key</h2>
-          <div className="key-selector">
-            {ALL_KEYS.map((k) => (
-              <button
-                key={k}
-                onClick={() => setKey(k)}
-                className={`key-btn ${key === k ? 'selected' : ''}`}
-              >
-                {k}
-              </button>
-            ))}
-          </div>
+          <CircleOfFifths
+            currentKey={key}
+            onKeySelect={setKey}
+          />
         </div>
 
         {/* Options */}
@@ -113,6 +108,26 @@ export default function ChordReference({ onBack }) {
                     <ChordDiagram chord={selectedChord} size={100} />
                   </div>
                 )}
+                {/* Inline Theory Tip - shown when progression matches a known pattern */}
+                {detectedProgression && (
+                  <div className="theory-tip">
+                    <div className="theory-tip-header">
+                      <span className="theory-tip-name">{detectedProgression.name}</span>
+                      <span className="theory-tip-numerals">
+                        {detectedProgression.numerals.join(' - ')}
+                      </span>
+                    </div>
+                    <p className="theory-tip-description">{detectedProgression.theory}</p>
+                    {detectedProgression.songs && detectedProgression.songs.length > 0 && (
+                      <p className="theory-tip-songs">
+                        Like "{detectedProgression.songs[0].title}" by {detectedProgression.songs[0].artist}
+                        {detectedProgression.songs.length > 1 && (
+                          <>, "{detectedProgression.songs[1].title}"</>
+                        )}
+                      </p>
+                    )}
+                  </div>
+                )}
                 <div className="progression-actions">
                   <button
                     onClick={handlePlay}
@@ -151,11 +166,11 @@ export default function ChordReference({ onBack }) {
         <div className="section">
           <h2>Chords in {key} Major</h2>
           <div className={`chords-in-key ${showDiagrams ? 'with-diagrams' : ''}`}>
-            {chordsInKey.map((c) => (
+            {chordsWithFunction.map((c) => (
               <button
                 key={c.degree}
                 onClick={() => addChord(c.chord)}
-                className={`chord-btn ${showDiagrams ? 'with-diagram' : ''}`}
+                className={`chord-btn ${showDiagrams ? 'with-diagram' : ''} function-${c.function}`}
               >
                 <span className="chord-name">{c.chord}</span>
                 <span className="chord-degree">{c.degree}</span>
@@ -163,22 +178,71 @@ export default function ChordReference({ onBack }) {
               </button>
             ))}
           </div>
+          <div className="function-legend">
+            <span className="function-legend-item tonic">Tonic</span>
+            <span className="function-legend-item subdominant">Subdominant</span>
+            <span className="function-legend-item dominant">Dominant</span>
+          </div>
         </div>
 
         {/* Common Progressions */}
         <div className="section">
           <h2>Common Progressions</h2>
-          <div className="common-progressions">
-            {commonProgressions.map((prog) => (
+
+          {/* Genre Filter */}
+          <div className="genre-filters">
+            <button
+              onClick={() => setGenreFilter(null)}
+              className={`genre-chip ${genreFilter === null ? 'active' : ''}`}
+            >
+              All
+            </button>
+            {genres.map((genre) => (
               <button
-                key={prog.name}
-                onClick={() => handleApplyProgression(prog.numerals)}
-                className="progression-btn"
+                key={genre.id}
+                onClick={() => setGenreFilter(genre.id)}
+                className={`genre-chip ${genreFilter === genre.id ? 'active' : ''}`}
               >
-                <span className="prog-name">{prog.name}</span>
-                <span className="prog-numerals">{prog.numerals.join(' - ')}</span>
-                <span className="prog-desc">{prog.description}</span>
+                {genre.label}
               </button>
+            ))}
+          </div>
+
+          <div className="common-progressions">
+            {filteredProgressions.map((prog) => (
+              <div key={prog.name} className="progression-card">
+                <div className="progression-card-header">
+                  <span className="prog-name">{prog.name}</span>
+                  <span className="prog-numerals">{prog.numerals.join(' - ')}</span>
+                </div>
+                <div className="progression-card-meta">
+                  {prog.genre && (
+                    <span className="prog-genres">
+                      {prog.genre.map((g) => g.charAt(0).toUpperCase() + g.slice(1)).join(', ')}
+                    </span>
+                  )}
+                  {prog.mood && (
+                    <span className="prog-mood">{prog.mood}</span>
+                  )}
+                </div>
+                {prog.songs && prog.songs.length > 0 && (
+                  <div className="prog-songs">
+                    {prog.songs.slice(0, 2).map((song, i) => (
+                      <span key={i} className="prog-song">
+                        "{song.title}" - {song.artist}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <div className="progression-card-actions">
+                  <button
+                    onClick={() => handleApplyProgression(prog.numerals)}
+                    className="btn btn-small btn-accent"
+                  >
+                    Apply to {key}
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         </div>
