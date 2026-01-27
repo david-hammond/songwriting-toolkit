@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import { useChordProgression } from '../../../hooks/useChordProgression'
+import { playProgression } from '../../../utils/audio'
 import './ChordReference.css'
 
 const ALL_KEYS = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'F', 'Bb', 'Eb', 'Ab', 'Db']
 
 export default function ChordReference({ onBack }) {
+  const [isPlaying, setIsPlaying] = useState(false)
+
   const {
     key,
     setKey,
@@ -17,6 +21,13 @@ export default function ChordReference({ onBack }) {
     clearProgression,
     applyCommonProgression,
   } = useChordProgression()
+
+  const handlePlay = () => {
+    if (progression.length === 0 || isPlaying) return
+    setIsPlaying(true)
+    const duration = playProgression(progression)
+    setTimeout(() => setIsPlaying(false), duration)
+  }
 
   return (
     <div className="chord-reference">
@@ -57,6 +68,13 @@ export default function ChordReference({ onBack }) {
                   ))}
                 </div>
                 <div className="progression-actions">
+                  <button
+                    onClick={handlePlay}
+                    disabled={isPlaying}
+                    className="btn btn-accent btn-small"
+                  >
+                    {isPlaying ? '▶ ...' : '▶ Play'}
+                  </button>
                   <button onClick={removeLastChord} className="btn btn-secondary btn-small">
                     Undo
                   </button>
