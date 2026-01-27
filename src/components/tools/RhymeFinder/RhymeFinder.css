@@ -24,6 +24,37 @@
   color: var(--text-color);
 }
 
+.mode-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.mode-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 2px solid var(--card-border);
+  border-radius: 20px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 40px;
+}
+
+.mode-btn:hover {
+  border-color: var(--accent-color);
+}
+
+.mode-btn.selected {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
 .search-form {
   width: 100%;
   display: flex;

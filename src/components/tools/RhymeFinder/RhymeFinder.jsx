@@ -1,14 +1,21 @@
 import { useState } from 'react'
-import { useRhymeFinder } from '../../../hooks/useRhymeFinder'
+import { useWordExplorer } from '../../../hooks/useWordExplorer'
 import './RhymeFinder.css'
 
 export default function RhymeFinder({ onBack }) {
   const [input, setInput] = useState('')
-  const { word, results, loading, error, searchRhymes, clear } = useRhymeFinder()
+  const { word, mode, setMode, results, loading, error, search, clear, modes } = useWordExplorer()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    searchRhymes(input)
+    search(input, mode)
+  }
+
+  const handleModeChange = (newMode) => {
+    setMode(newMode)
+    if (input.trim()) {
+      search(input, newMode)
+    }
   }
 
   const handleClear = () => {
@@ -16,12 +23,7 @@ export default function RhymeFinder({ onBack }) {
     clear()
   }
 
-  const hasResults =
-    results &&
-    (results.perfect.length > 0 ||
-      results.near.length > 0 ||
-      results.slant.length > 0 ||
-      results.homophones.length > 0)
+  const hasResults = results?.sections?.some((s) => s.words.length > 0)
 
   return (
     <div className="rhyme-finder">
@@ -30,7 +32,20 @@ export default function RhymeFinder({ onBack }) {
       </button>
 
       <div className="content">
-        <h1>Rhyme Finder</h1>
+        <h1>Word Explorer</h1>
+
+        {/* Mode Selector */}
+        <div className="mode-selector">
+          {modes.map((m) => (
+            <button
+              key={m.key}
+              onClick={() => handleModeChange(m.key)}
+              className={`mode-btn ${mode === m.key ? 'selected' : ''}`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
 
         <form onSubmit={handleSubmit} className="search-form">
           <input
@@ -45,7 +60,7 @@ export default function RhymeFinder({ onBack }) {
           />
           <div className="search-buttons">
             <button type="submit" className="btn btn-primary" disabled={loading || !input.trim()}>
-              {loading ? 'Searching...' : 'Find Rhymes'}
+              {loading ? 'Searching...' : 'Search'}
             </button>
             {(input || results) && (
               <button type="button" onClick={handleClear} className="btn btn-secondary">
@@ -59,59 +74,23 @@ export default function RhymeFinder({ onBack }) {
 
         {results && (
           <div className="results">
-            {results.perfect.length > 0 && (
-              <div className="result-section">
-                <h2>Perfect Rhymes</h2>
-                <div className="word-list">
-                  {results.perfect.map((w) => (
-                    <span key={w} className="word-chip perfect">
-                      {w}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            {results.sections.map(
+              (section) =>
+                section.words.length > 0 && (
+                  <div key={section.title} className="result-section">
+                    <h2>{section.title}</h2>
+                    <div className="word-list">
+                      {section.words.map((w) => (
+                        <span key={w} className={`word-chip ${section.color}`}>
+                          {w}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )
             )}
 
-            {results.near.length > 0 && (
-              <div className="result-section">
-                <h2>Near Rhymes</h2>
-                <div className="word-list">
-                  {results.near.map((w) => (
-                    <span key={w} className="word-chip near">
-                      {w}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {results.slant.length > 0 && (
-              <div className="result-section">
-                <h2>Slant Rhymes</h2>
-                <div className="word-list">
-                  {results.slant.map((w) => (
-                    <span key={w} className="word-chip slant">
-                      {w}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {results.homophones.length > 0 && (
-              <div className="result-section">
-                <h2>Homophones</h2>
-                <div className="word-list">
-                  {results.homophones.map((w) => (
-                    <span key={w} className="word-chip homophone">
-                      {w}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {!hasResults && <p className="no-results">No rhymes found for "{word}"</p>}
+            {!hasResults && <p className="no-results">No results found for "{word}"</p>}
           </div>
         )}
       </div>
