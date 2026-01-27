@@ -72,11 +72,8 @@ export default function ObjectWriting({ onBack }) {
   }
 
   const cycleSense = () => {
-    if (senseIndex === null) {
-      setSenseIndex(0)
-    } else {
-      setSenseIndex((prev) => (prev + 1) % SENSE_PROMPTS.length)
-    }
+    const randomIndex = Math.floor(Math.random() * SENSE_PROMPTS.length)
+    setSenseIndex(randomIndex)
   }
 
   const hideSensePrompt = () => {
