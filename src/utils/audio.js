@@ -29,12 +29,13 @@ const NOTE_FREQUENCIES = {
 }
 
 function parseChord(chordName) {
-  // Extract root note and quality from chord name (e.g., "Am", "F#m", "Bdim")
-  const match = chordName.match(/^([A-G][#b]?)(m|dim)?$/)
+  // Extract root note and quality from chord name
+  // Examples: "Am", "F#m", "Bdim", "Cmaj7", "Dm7", "G7", "Bm7b5"
+  const match = chordName.match(/^([A-G][#b]?)(m7b5|maj7|m7|dim|m|7)?$/)
   if (!match) return null
 
   const root = match[1]
-  const quality = match[2] || '' // '', 'm', or 'dim'
+  const quality = match[2] || '' // '', 'm', 'dim', 'maj7', 'm7', '7', 'm7b5'
 
   return { root, quality }
 }
@@ -48,12 +49,27 @@ function getChordFrequencies(chordName) {
 
   // Intervals in semitones from root
   let intervals
-  if (parsed.quality === 'm') {
-    intervals = [0, 3, 7] // Minor: root, minor 3rd, perfect 5th
-  } else if (parsed.quality === 'dim') {
-    intervals = [0, 3, 6] // Diminished: root, minor 3rd, diminished 5th
-  } else {
-    intervals = [0, 4, 7] // Major: root, major 3rd, perfect 5th
+  switch (parsed.quality) {
+    case 'm':
+      intervals = [0, 3, 7] // Minor: root, minor 3rd, perfect 5th
+      break
+    case 'dim':
+      intervals = [0, 3, 6] // Diminished: root, minor 3rd, diminished 5th
+      break
+    case 'maj7':
+      intervals = [0, 4, 7, 11] // Major 7th: root, major 3rd, perfect 5th, major 7th
+      break
+    case 'm7':
+      intervals = [0, 3, 7, 10] // Minor 7th: root, minor 3rd, perfect 5th, minor 7th
+      break
+    case '7':
+      intervals = [0, 4, 7, 10] // Dominant 7th: root, major 3rd, perfect 5th, minor 7th
+      break
+    case 'm7b5':
+      intervals = [0, 3, 6, 10] // Half-diminished: root, minor 3rd, diminished 5th, minor 7th
+      break
+    default:
+      intervals = [0, 4, 7] // Major: root, major 3rd, perfect 5th
   }
 
   // Calculate frequencies (using equal temperament)
