@@ -58,7 +58,7 @@ function ToolSelector({ onSelectTool }) {
         <span>Made by David Hammond</span>
         <div className="footer-links">
           <a
-            href="https://github.com/david-hammond/pentatonic"
+            href="https://github.com/david-hammond/songwriting-toolkit"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -66,7 +66,7 @@ function ToolSelector({ onSelectTool }) {
           </a>
           <span className="separator">·</span>
           <a
-            href="https://github.com/david-hammond/pentatonic/issues"
+            href="https://github.com/david-hammond/songwriting-toolkit/issues"
             target="_blank"
             rel="noopener noreferrer"
           >

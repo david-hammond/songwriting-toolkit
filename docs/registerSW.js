@@ -1,1 +1,1 @@
-if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/pentatonic/sw.js', { scope: '/pentatonic/' })})}
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/songwriting-toolkit/sw.js', { scope: '/songwriting-toolkit/' })})}

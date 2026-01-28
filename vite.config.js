@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/pentatonic/',
+  base: '/songwriting-toolkit/',
   build: {
     outDir: 'docs',
   },
@@ -17,8 +17,8 @@ export default defineConfig({
         name: "Songwriting Toolkit",
         short_name: 'Songwriting',
         description: "Notebook ready. Instrument tuned. Let's write.",
-        start_url: '/pentatonic/',
-        scope: '/pentatonic/',
+        start_url: '/songwriting-toolkit/',
+        scope: '/songwriting-toolkit/',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
