@@ -262,31 +262,36 @@
   font-size: 0.875rem;
 }
 
-/* Options toggles */
-.options-row {
+/* Diagram Type Toggle */
+.diagram-toggle {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.25rem;
+  background-color: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: 8px;
+  padding: 0.25rem;
 }
 
-.toggle-option {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  user-select: none;
-}
-
-.toggle-option input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  accent-color: var(--accent-color);
-  cursor: pointer;
-}
-
-.toggle-label {
+.diagram-toggle-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
   font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.diagram-toggle-btn:hover {
   color: var(--text-color);
+}
+
+.diagram-toggle-btn.active {
+  background-color: var(--accent-color);
+  color: white;
 }
 
 /* Chords with diagrams */
@@ -332,15 +337,26 @@
   font-weight: 400;
 }
 
-/* Selected chord diagram display */
-.selected-chord-diagram {
-  display: flex;
-  justify-content: center;
-  padding: 0.5rem;
-  background-color: var(--bg-color);
-  border-radius: 8px;
-  margin-top: 0.5rem;
+/* 7th chord indicator */
+.progression-chord-btn.is-seventh {
+  background: linear-gradient(135deg, var(--function-dominant) 0%, var(--function-tonic) 100%);
+  color: white;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
 }
+
+.progression-chord-btn.is-seventh:not(:last-child)::after {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Hint text */
+.progression-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0.25rem 0 0 0;
+  font-style: italic;
+}
+
 
 /* Theory Tip (inline detection) */
 .theory-tip {

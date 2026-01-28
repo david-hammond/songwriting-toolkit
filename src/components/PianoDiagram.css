@@ -1,0 +1,24 @@
+.piano-diagram {
+  display: block;
+}
+
+.piano-key {
+  stroke: #333;
+  stroke-width: 1;
+}
+
+.piano-key.white {
+  fill: #fff;
+}
+
+.piano-key.black {
+  fill: #222;
+}
+
+.piano-key.white.pressed {
+  fill: var(--function-tonic, #4CAF50);
+}
+
+.piano-key.black.pressed {
+  fill: var(--function-dominant, #2196F3);
+}

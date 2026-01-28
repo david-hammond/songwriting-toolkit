@@ -216,12 +216,16 @@ export default function ChordDiagram({ chord, size = 80 }) {
         {barres.map((barre, i) => {
           const fretPos = barre.fret - startFret
           if (fretPos < 0 || fretPos >= 4) return null
+          const fromX = padding + barre.from * stringSpacing
+          const toX = padding + barre.to * stringSpacing
+          const barreX = Math.min(fromX, toX) - 3
+          const barreWidth = Math.abs(toX - fromX) + 6
           return (
             <rect
               key={`barre-${i}`}
-              x={padding + barre.to * stringSpacing - 3}
+              x={barreX}
               y={topPadding + fretPos * fretSpacing + fretSpacing / 2 - 5}
-              width={(barre.from - barre.to) * stringSpacing + 6}
+              width={barreWidth}
               height={10}
               rx={5}
               fill="currentColor"
@@ -231,7 +235,8 @@ export default function ChordDiagram({ chord, size = 80 }) {
 
         {/* Finger positions */}
         {frets.map((fret, string) => {
-          const x = padding + (5 - string) * stringSpacing
+          // String 0 = low E (left), String 5 = high e (right)
+          const x = padding + string * stringSpacing
 
           if (fret === -1) {
             // Muted string
@@ -273,9 +278,10 @@ export default function ChordDiagram({ chord, size = 80 }) {
 
           // Check if this position is covered by a barre
           const isBarre = barres.some(
-            (b) => b.fret === fret && string >= b.to && string <= b.from
+            (b) => b.fret === fret && string >= Math.min(b.from, b.to) && string <= Math.max(b.from, b.to)
           )
-          if (isBarre && string !== barres[0]?.from) return null
+          // Only show the dot at the barre ends, not in the middle
+          if (isBarre && string !== Math.min(barres[0]?.from, barres[0]?.to)) return null
 
           return (
             <circle key={`fret-${string}`} cx={x} cy={y} r={6} fill="currentColor" />

@@ -213,6 +213,42 @@ const GENRES = [
   { id: 'country', label: 'Country', description: 'Traditional, heartfelt' },
 ]
 
+// Map of triad to 7th chord conversions
+const SEVENTH_MAP = {
+  // Major chords -> maj7
+  '': 'maj7',
+  'maj7': '',
+  // Minor chords -> m7
+  'm': 'm7',
+  'm7': 'm',
+  // Dominant 7 (for V chord)
+  '7': '',
+  // Diminished -> half-diminished
+  'dim': 'm7b5',
+  'm7b5': 'dim',
+}
+
+// Toggle a chord between its triad and 7th form
+function toggleChordQuality(chord) {
+  // Parse the chord: root + quality
+  const match = chord.match(/^([A-G][#b]?)(m7b5|maj7|m7|dim|m|7)?$/)
+  if (!match) return chord
+
+  const root = match[1]
+  const quality = match[2] || ''
+
+  // Get the toggled quality
+  const newQuality = SEVENTH_MAP[quality]
+  if (newQuality === undefined) return chord
+
+  return root + newQuality
+}
+
+// Check if a chord is a 7th chord
+function is7thChord(chord) {
+  return /maj7|m7b5|m7|7/.test(chord)
+}
+
 function getNoteIndex(note) {
   const normalized = note.replace('b', 'b').replace('#', '#')
   let idx = CHROMATIC.indexOf(normalized)
@@ -377,10 +413,10 @@ function getChordFunction(degree) {
 export function useChordProgression() {
   const [key, setKey] = useState('C')
   const [progression, setProgression] = useState([])
-  const [use7ths, setUse7ths] = useState(false)
   const [genreFilter, setGenreFilter] = useState(null)
 
-  const chordsInKey = useMemo(() => getChordsInKey(key, use7ths), [key, use7ths])
+  // Always show triads in the "Chords in Key" section - user can tap to add 7ths in progression
+  const chordsInKey = useMemo(() => getChordsInKey(key, false), [key])
   const relatedKeys = useMemo(() => getRelatedKeys(key), [key])
 
   // Add chord function to each chord in key
@@ -420,6 +456,17 @@ export function useChordProgression() {
 
   const clearProgression = useCallback(() => {
     setProgression([])
+  }, [])
+
+  // Toggle a chord at a specific index between triad and 7th
+  const toggleChordAt = useCallback((index) => {
+    setProgression((prev) => {
+      const newProgression = [...prev]
+      if (index >= 0 && index < newProgression.length) {
+        newProgression[index] = toggleChordQuality(newProgression[index])
+      }
+      return newProgression
+    })
   }, [])
 
   const applyCommonProgression = useCallback(
@@ -479,11 +526,11 @@ export function useChordProgression() {
     genreFilter,
     setGenreFilter,
     detectedProgression,
-    use7ths,
-    setUse7ths,
     addChord,
     removeLastChord,
     clearProgression,
+    toggleChordAt,
+    is7thChord,
     applyCommonProgression,
     getChordFunction,
   }

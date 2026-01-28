@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { useChordProgression } from '../../../hooks/useChordProgression'
 import { playProgression } from '../../../utils/audio'
 import ChordDiagram from '../../ChordDiagram'
+import PianoDiagram from '../../PianoDiagram'
 import CircleOfFifths from './CircleOfFifths'
 import './ChordReference.css'
 
 export default function ChordReference({ onBack }) {
   const [isPlaying, setIsPlaying] = useState(false)
-  const [showDiagrams, setShowDiagrams] = useState(false)
-  const [selectedChord, setSelectedChord] = useState(null)
+  const [diagramType, setDiagramType] = useState(null) // null, 'guitar', or 'piano'
 
   const {
     key,
@@ -22,11 +22,11 @@ export default function ChordReference({ onBack }) {
     genreFilter,
     setGenreFilter,
     detectedProgression,
-    use7ths,
-    setUse7ths,
     addChord,
     removeLastChord,
     clearProgression,
+    toggleChordAt,
+    is7thChord,
     applyCommonProgression,
   } = useChordProgression()
 
@@ -64,25 +64,27 @@ export default function ChordReference({ onBack }) {
           />
         </div>
 
-        {/* Options */}
+        {/* Diagram Type Toggle */}
         <div className="section">
-          <div className="options-row">
-            <label className="toggle-option">
-              <input
-                type="checkbox"
-                checked={use7ths}
-                onChange={(e) => setUse7ths(e.target.checked)}
-              />
-              <span className="toggle-label">7th Chords</span>
-            </label>
-            <label className="toggle-option">
-              <input
-                type="checkbox"
-                checked={showDiagrams}
-                onChange={(e) => setShowDiagrams(e.target.checked)}
-              />
-              <span className="toggle-label">Guitar Diagrams</span>
-            </label>
+          <div className="diagram-toggle">
+            <button
+              className={`diagram-toggle-btn ${diagramType === null ? 'active' : ''}`}
+              onClick={() => setDiagramType(null)}
+            >
+              Off
+            </button>
+            <button
+              className={`diagram-toggle-btn ${diagramType === 'guitar' ? 'active' : ''}`}
+              onClick={() => setDiagramType('guitar')}
+            >
+              Guitar
+            </button>
+            <button
+              className={`diagram-toggle-btn ${diagramType === 'piano' ? 'active' : ''}`}
+              onClick={() => setDiagramType('piano')}
+            >
+              Piano
+            </button>
           </div>
         </div>
 
@@ -96,18 +98,14 @@ export default function ChordReference({ onBack }) {
                   {progression.map((chord, i) => (
                     <button
                       key={i}
-                      className={`progression-chord-btn ${selectedChord === chord ? 'selected' : ''}`}
-                      onClick={() => setSelectedChord(selectedChord === chord ? null : chord)}
+                      className={`progression-chord-btn ${is7thChord(chord) ? 'is-seventh' : ''}`}
+                      onClick={() => toggleChordAt(i)}
                     >
                       {chord}
                     </button>
                   ))}
                 </div>
-                {selectedChord && (
-                  <div className="selected-chord-diagram">
-                    <ChordDiagram chord={selectedChord} size={100} />
-                  </div>
-                )}
+                <p className="progression-hint">Tap chord to toggle 7th</p>
                 {/* Inline Theory Tip - shown when progression matches a known pattern */}
                 {detectedProgression && (
                   <div className="theory-tip">
@@ -165,16 +163,17 @@ export default function ChordReference({ onBack }) {
         {/* Chords in Key */}
         <div className="section">
           <h2>Chords in {key} Major</h2>
-          <div className={`chords-in-key ${showDiagrams ? 'with-diagrams' : ''}`}>
+          <div className={`chords-in-key ${diagramType ? 'with-diagrams' : ''}`}>
             {chordsWithFunction.map((c) => (
               <button
                 key={c.degree}
                 onClick={() => addChord(c.chord)}
-                className={`chord-btn ${showDiagrams ? 'with-diagram' : ''} function-${c.function}`}
+                className={`chord-btn ${diagramType ? 'with-diagram' : ''} function-${c.function}`}
               >
                 <span className="chord-name">{c.chord}</span>
                 <span className="chord-degree">{c.degree}</span>
-                {showDiagrams && <ChordDiagram chord={c.chord} size={60} />}
+                {diagramType === 'guitar' && <ChordDiagram chord={c.chord} size={60} />}
+                {diagramType === 'piano' && <PianoDiagram chord={c.chord} size={60} />}
               </button>
             ))}
           </div>

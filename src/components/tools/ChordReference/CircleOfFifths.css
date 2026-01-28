@@ -161,6 +161,13 @@
   background-color: var(--function-dominant, #2196F3);
 }
 
+.circle-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+  font-style: italic;
+}
+
 /* Responsive */
 @media (max-width: 360px) {
   .segment-label {

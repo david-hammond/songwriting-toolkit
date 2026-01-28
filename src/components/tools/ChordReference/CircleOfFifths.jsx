@@ -203,6 +203,7 @@ export default function CircleOfFifths({ currentKey, onKeySelect }) {
           <span className="legend-dot"></span>
         </span>
       </div>
+      <p className="circle-hint">Tap to select key</p>
     </div>
   )
 }
