@@ -32,7 +32,7 @@ export default function RhymeFinder({ onBack }) {
       </button>
 
       <div className="content">
-        <h1>Word Explorer</h1>
+        <h1>Rhyme Finder</h1>
 
         {/* Mode Selector */}
         <div className="mode-selector">

@@ -7,8 +7,8 @@ import './App.css'
 
 const TOOLS = [
   { id: 'object-writing', name: 'Object Writing', icon: '✏️', disabled: false },
-  { id: 'word-explorer', name: 'Word Explorer', icon: '🔍', disabled: false },
-  { id: 'chords', name: 'Chord Progressions', icon: '🎸', disabled: false },
+  { id: 'word-explorer', name: 'Rhyme Finder', icon: '📖', disabled: false },
+  { id: 'chords', name: 'Chords', icon: '🎸', disabled: false },
   { id: 'song-structure', name: 'Structures', icon: '🎵', disabled: false },
 ]
 
@@ -31,6 +31,16 @@ function ToolSelector({ onSelectTool }) {
           </button>
         ))}
       </div>
+      <footer className="app-footer">
+        <span>Made by David Hammond</span>
+        <a
+          href="https://github.com/david-hammond/pentatonic"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Feedback welcome on GitHub
+        </a>
+      </footer>
     </div>
   )
 }
