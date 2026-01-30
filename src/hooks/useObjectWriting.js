@@ -33,9 +33,6 @@ export function useObjectWriting(prompts, durationSeconds = 600) {
   }, [prompts])
 
   const startExercise = useCallback(async () => {
-    // Test if this function is even being called
-    alert('startExercise called!')
-
     // Enable NoSleep IMMEDIATELY during user gesture (button click)
     await enableNoSleep()
 
