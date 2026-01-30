@@ -21,12 +21,35 @@ function getNoSleepInstance() {
  */
 export async function enableNoSleep() {
   try {
+    console.log('🔒 Attempting to enable NoSleep...')
+    console.log('- Browser:', navigator.userAgent)
+    console.log('- Has wakeLock API?', 'wakeLock' in navigator)
+    console.log('- Is HTTPS?', window.location.protocol === 'https:')
+
     const noSleep = getNoSleepInstance()
+
+    console.log('- Calling noSleep.enable()...')
     await noSleep.enable()
-    console.log('✓ NoSleep enabled - screen will stay awake')
+
+    console.log('✅ NoSleep enabled successfully!')
+    console.log('- noSleep.isEnabled:', noSleep.isEnabled)
+
+    // Alert on mobile for visibility
+    if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      alert('✅ NoSleep enabled! Screen should stay awake.')
+    }
+
     return true
   } catch (error) {
-    console.error('Failed to enable NoSleep:', error)
+    console.error('❌ Failed to enable NoSleep:', error)
+    console.error('- Error name:', error.name)
+    console.error('- Error message:', error.message)
+
+    // Alert error on mobile
+    if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      alert('❌ NoSleep FAILED: ' + error.message)
+    }
+
     return false
   }
 }
